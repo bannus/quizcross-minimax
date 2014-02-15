@@ -1,0 +1,28 @@
+.container {
+  max-width: 730px;
+}
+
+.center {
+    float: none;
+    margin-left: 213px !important;
+}
+
+.jumbotron {
+  text-align: center;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.forms {
+  margin: 40px 0;
+}
+
+.footer {
+  padding-top: 20px;
+  color: #777;
+  border-top: 1px solid #e5e5e5;
+}
+
+.table {
+  text-align: center;
+}
+
