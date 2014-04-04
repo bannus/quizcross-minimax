@@ -159,6 +159,7 @@ Board.prototype.print = function() {
 Board.prototype.alphabeta = function(depth, alpha, beta, maximizing) {
     this.eval();
     //console.log('depth', depth);
+    //this.print();
 
     // return value of node
     if (this.state !== states.playing) {
@@ -170,6 +171,7 @@ Board.prototype.alphabeta = function(depth, alpha, beta, maximizing) {
         for (var i = 0; i < 9; i++) {
             if (depth === 0) {
                 alpha = -Infinity;
+                beta = Infinity;
             }
             var value = null;
             // If square is owned by opponent (not ***) or unplayed, we can play here
@@ -196,14 +198,19 @@ Board.prototype.alphabeta = function(depth, alpha, beta, maximizing) {
                     this.restore();
                 }
             }
-            if (depth === 0 && value !== null) {
-                console.log('square', i, ':', value);
-                //results[i] = value;
-                displayResults();
-            }
             if (value !== null) {
+                //console.log('value', value, 'alpha', alpha);
                 alpha = Math.max(value, alpha);
+                console.log('alpha', alpha, 'beta', beta);
+
+                if (depth === 0) {
+                    console.log('----square', i, ':', value);
+                    results[i] = alpha;
+                    displayResults();
+                }
+
                 if (beta <= alpha) {
+                    //console.log('max pruning at ', alpha, beta);
                     break;
                 }
             }
@@ -240,8 +247,11 @@ Board.prototype.alphabeta = function(depth, alpha, beta, maximizing) {
                 }
             }
             if (value !== null) {
+                //console.log('value', value, 'beta', beta);
                 beta = Math.min(value, beta);
+                //console.log('alpha', alpha, 'beta', beta);
                 if (beta <= alpha) {
+                    //console.log('min pruning at ', alpha, beta);
                     break;
                 }
             }
@@ -357,7 +367,7 @@ function retrieveFormData()
 function displayResults()
 {
     for (var i = 0; i < 9; i++) {
-        $('#option' + i).html((results[i]) ? results[i].toFixed(3) : '--');
+        $('#option' + i).html((results[i] != undefined) ? results[i].toFixed(3) : '--');
     }
 }
 
@@ -374,6 +384,7 @@ $(document).ready(function () {
 $('#form').submit(function() {
     board = new Board();
     moves = 0;
+    results = [];
     saveFormData();
     board.loadForm();
     board.eval();
@@ -381,8 +392,8 @@ $('#form').submit(function() {
     console.log(myProb);
     console.log(theirProb);
 
-    //board.minimax(0, true);
-    board.alphabeta(0, -Infinity, Infinity, true);
+    board.minimax(0, true);
+    //board.alphabeta(0, -Infinity, Infinity, true);
     console.log('moves', moves);
     return false;
 });
